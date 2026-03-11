@@ -45,13 +45,8 @@ go install github.com/namezzy/gtodo@latest
 # 1. 启动 MySQL
 docker compose up -d
 
-# 2. 设置环境变量（Windows PowerShell）
-$env:GTODO_STORAGE="mysql"
-$env:GTODO_MYSQL_DSN="gtodo:gtodo_pass_123@tcp(127.0.0.1:13306)/gtodo?charset=utf8mb4&parseTime=True&loc=Local"
-
-# 2. 设置环境变量（Linux/macOS）
-export GTODO_STORAGE=mysql
-export GTODO_MYSQL_DSN="gtodo:gtodo_pass_123@tcp(127.0.0.1:13306)/gtodo?charset=utf8mb4&parseTime=True&loc=Local"
+# 2. 初始化环境（PowerShell，注意前面的点）
+. .\setup.ps1
 
 # 3. 正常使用 gtodo 命令
 gtodo add "我的第一个任务" -p high
@@ -61,6 +56,8 @@ gtodo done 1
 # 4. 停止 MySQL
 docker compose down
 ```
+
+> 也可以用 CMD 运行 `setup.bat` 来初始化环境。
 
 ## 🚀 快速上手
 
