@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+.env.example
+*.exe
+*.dll
+*.so
+*.dylib
+.gtodo/
+README.md
+LICENSE
+docs/
+.idea/
+.vscode/

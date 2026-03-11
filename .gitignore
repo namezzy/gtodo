@@ -17,3 +17,6 @@ Thumbs.db
 
 # Data
 .gtodo/
+
+# Docker
+.env

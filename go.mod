@@ -4,11 +4,13 @@ go 1.23.2
 
 require (
 	github.com/fatih/color v1.18.0
+	github.com/go-sql-driver/mysql v1.9.3
 	github.com/olekukonko/tablewriter v1.1.3
 	github.com/spf13/cobra v1.10.2
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/clipperhouse/displaywidth v0.6.2 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect

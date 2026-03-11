@@ -17,13 +17,14 @@ var addCmd = &cobra.Command{
 	Short: "添加一个新待办事项",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		desc := args[0] // 简单起见只取第一个参数，实际可 strings.Join(args, " ")
+		desc := args[0]
 
-		sto, err := storage.NewJSONStorage()
+		sto, err := storage.NewStorage()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "存储初始化失败:", err)
 			os.Exit(1)
 		}
+		defer sto.Close()
 
 		tasks, err := sto.Load()
 		if err != nil {

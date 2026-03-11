@@ -19,11 +19,12 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "列出待办事项",
 	Run: func(cmd *cobra.Command, args []string) {
-		st, err := storage.NewJSONStorage()
+		st, err := storage.NewStorage()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "无法初始化存储:", err)
 			os.Exit(1)
 		}
+		defer st.Close()
 
 		tasks, err := st.Load()
 		if err != nil {

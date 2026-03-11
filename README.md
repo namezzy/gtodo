@@ -20,6 +20,8 @@
 - ✅ **完成标记** — 轻松将事项标记为已完成
 - 🗑️ **删除事项** — 按 ID 精准删除
 - 💾 **本地持久化** — JSON 文件存储，数据透明可备份
+- 🐳 **Docker 支持** — docker-compose 一键启动，MySQL 持久化
+- 🗄️ **多存储后端** — 支持 JSON / MySQL，环境变量切换
 
 ## 📦 安装
 
@@ -35,6 +37,28 @@ go build -o gtodo .
 
 ```bash
 go install github.com/namezzy/gtodo@latest
+```
+
+### 🐳 使用 Docker
+
+```bash
+# 1. 复制并编辑环境变量
+cp .env.example .env
+
+# 2. 构建并启动（MySQL + App）
+docker compose up -d --build
+
+# 3. 使用 gtodo 命令
+docker compose run --rm app add "我的第一个任务" -p high
+docker compose run --rm app list
+docker compose run --rm app done 1
+docker compose run --rm app delete 1
+
+# 4. 停止服务
+docker compose down
+
+# 5. 停止并删除数据
+docker compose down -v
 ```
 
 ## 🚀 快速上手
@@ -122,11 +146,17 @@ gtodo/
 │   ├── list.go              # list 子命令
 │   ├── done.go              # done 子命令
 │   └── delete.go            # delete 子命令
+├── Dockerfile               # 多阶段 Docker 构建
+├── docker-compose.yml       # MySQL + App 编排
+├── .env.example             # 环境变量模板
 ├── internal/                # 内部核心逻辑
 │   ├── model/
 │   │   └── task.go          # Task 数据模型
 │   └── storage/
-│       └── json_storage.go  # JSON 文件持久化
+│       ├── storage.go       # Storage 接口定义
+│       ├── factory.go       # 存储工厂（环境变量切换）
+│       ├── json_storage.go  # JSON 文件持久化
+│       └── mysql_storage.go # MySQL 持久化
 └── docs/
     └── architecture.md      # 架构与代码解析文档
 ```
@@ -135,13 +165,16 @@ gtodo/
 
 ## 💾 数据存储
 
-所有任务以 JSON 格式保存在用户主目录下：
+Gtodo 支持两种存储后端，通过环境变量 `GTODO_STORAGE` 切换：
 
-```
-~/.gtodo/tasks.json
+### JSON 文件存储（默认）
+
+```bash
+# 无需额外配置，默认使用 JSON 存储
+gtodo add "学习 Go"
 ```
 
-数据格式示例：
+数据保存在 `~/.gtodo/tasks.json`：
 
 ```json
 [
@@ -155,6 +188,20 @@ gtodo/
 ]
 ```
 
+### MySQL 存储
+
+```bash
+# 设置环境变量后使用 MySQL
+export GTODO_STORAGE=mysql
+export GTODO_MYSQL_DSN="user:password@tcp(127.0.0.1:3306)/gtodo?charset=utf8mb4&parseTime=True&loc=Local"
+gtodo add "学习 Docker"
+```
+
+| 环境变量 | 说明 | 默认值 |
+| --- | --- | --- |
+| `GTODO_STORAGE` | 存储后端 | `json` |
+| `GTODO_MYSQL_DSN` | MySQL 连接字符串 | — |
+
 ## 🛠️ 技术栈
 
 | 依赖 | 用途 |
@@ -162,6 +209,7 @@ gtodo/
 | [spf13/cobra](https://github.com/spf13/cobra) | CLI 命令框架 |
 | [olekukonko/tablewriter](https://github.com/olekukonko/tablewriter) | 终端表格渲染 |
 | [fatih/color](https://github.com/fatih/color) | 终端彩色输出 |
+| [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql) | MySQL 驱动 |
 
 ## 📄 开源协议
 

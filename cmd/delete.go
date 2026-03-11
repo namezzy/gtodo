@@ -23,13 +23,14 @@ var deleteCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		storage, err := storage.NewJSONStorage()
+		sto, err := storage.NewStorage()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
+		defer sto.Close()
 
-		tasks, err := storage.Load()
+		tasks, err := sto.Load()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -51,7 +52,7 @@ var deleteCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if err := storage.Save(newTasks); err != nil {
+		if err := sto.Save(newTasks); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}

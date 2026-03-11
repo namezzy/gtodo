@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: gtodo-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-gtodo_root_123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-gtodo}
+      MYSQL_USER: ${MYSQL_USER:-gtodo}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gtodo_pass_123}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gtodo-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      GTODO_STORAGE: mysql
+      GTODO_MYSQL_DSN: "${MYSQL_USER:-gtodo}:${MYSQL_PASSWORD:-gtodo_pass_123}@tcp(mysql:3306)/${MYSQL_DATABASE:-gtodo}?charset=utf8mb4&parseTime=True&loc=Local"
+    # 默认运行 list 命令；可通过 docker compose run app <command> 覆盖
+    command: ["list", "--all"]
+
+volumes:
+  mysql_data:
