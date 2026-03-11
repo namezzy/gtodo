@@ -39,26 +39,27 @@ go build -o gtodo .
 go install github.com/namezzy/gtodo@latest
 ```
 
-### 🐳 使用 Docker
+### 🐳 使用 Docker（MySQL）
 
 ```bash
-# 1. 复制并编辑环境变量
-cp .env.example .env
+# 1. 启动 MySQL
+docker compose up -d
 
-# 2. 构建并启动（MySQL + App）
-docker compose up -d --build
+# 2. 设置环境变量（Windows PowerShell）
+$env:GTODO_STORAGE="mysql"
+$env:GTODO_MYSQL_DSN="gtodo:gtodo_pass_123@tcp(127.0.0.1:13306)/gtodo?charset=utf8mb4&parseTime=True&loc=Local"
 
-# 3. 使用 gtodo 命令
-docker compose run --rm app add "我的第一个任务" -p high
-docker compose run --rm app list
-docker compose run --rm app done 1
-docker compose run --rm app delete 1
+# 2. 设置环境变量（Linux/macOS）
+export GTODO_STORAGE=mysql
+export GTODO_MYSQL_DSN="gtodo:gtodo_pass_123@tcp(127.0.0.1:13306)/gtodo?charset=utf8mb4&parseTime=True&loc=Local"
 
-# 4. 停止服务
+# 3. 正常使用 gtodo 命令
+gtodo add "我的第一个任务" -p high
+gtodo list
+gtodo done 1
+
+# 4. 停止 MySQL
 docker compose down
-
-# 5. 停止并删除数据
-docker compose down -v
 ```
 
 ## 🚀 快速上手

@@ -18,19 +18,5 @@ services:
       timeout: 3s
       retries: 10
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: gtodo-app
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      GTODO_STORAGE: mysql
-      GTODO_MYSQL_DSN: "${MYSQL_USER:-gtodo}:${MYSQL_PASSWORD:-gtodo_pass_123}@tcp(mysql:3306)/${MYSQL_DATABASE:-gtodo}?charset=utf8mb4&parseTime=True&loc=Local"
-    # 默认运行 list 命令；可通过 docker compose run app <command> 覆盖
-    command: ["list", "--all"]
-
 volumes:
   mysql_data:
