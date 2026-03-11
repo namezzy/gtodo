@@ -9,7 +9,7 @@ services:
       MYSQL_USER: ${MYSQL_USER:-gtodo}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-gtodo_pass_123}
     ports:
-      - "${MYSQL_PORT:-3306}:3306"
+      - "${MYSQL_PORT:-13306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
